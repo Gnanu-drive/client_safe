@@ -4,7 +4,7 @@ st.set_page_config(layout="centered")
 st.title("📤 Camera Streamer")
 
 # Set this to your laptop's local IP on same Wi-Fi (e.g., 192.168.x.x)
-upload_url = "http://192.168.X.X:8000/upload"  # <-- Replace with actual IP
+upload_url = "http://192.168.1.5:8000/upload"  # <-- Replace with actual IP
 
 st.markdown(f"""
 This app streams camera frames to:
