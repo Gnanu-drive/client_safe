@@ -53,7 +53,7 @@ st.components.v1.html(f"""
 
 <!-- Image shown instead of video preview -->
 <img id="placeholder" 
-     src="https://www.samsung.com/etc/designs/smg/global/imgs/logo-square-letter.png" 
+     src="https://cdn.svgator.com/images/2023/06/generative-ai-preloader.svg" 
      width="100%" style="max-width: 400px;" />
 
 <!-- Hidden canvas for frame capture -->
