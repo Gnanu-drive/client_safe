@@ -52,9 +52,13 @@ st.components.v1.html(f"""
 <video id="video" autoplay playsinline style="display: none;"></video>
 
 <!-- Image shown instead of video preview -->
-<img id="placeholder" 
-     src="https://cdn.svgator.com/images/2023/06/generative-ai-preloader.svg" 
-     width="100%" style="max-width: 400px;" />
+<object id="placeholder" 
+        type="image/svg+xml" 
+        data="https://cdn.svgator.com/images/2023/06/generative-ai-preloader.svg"
+        width="100%" 
+        style="max-width: 400px;">
+</object>
+
 
 <!-- Hidden canvas for frame capture -->
 <canvas id="canvas" style="display:none;"></canvas>
