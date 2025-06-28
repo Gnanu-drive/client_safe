@@ -1,49 +1,51 @@
 import streamlit as st
-import cv2
-import time
-import requests
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
-import av
 
-# Configuration
-UPLOAD_URL = "https://66fb-2409-40f2-146-74ea-7057-78f-2c52-9437.ngrok-free.app/upload"
+st.set_page_config(layout="centered")
+st.title("📤 Camera Streamer")
 
-st.set_page_config(page_title="📤 Camera Stream to Server", layout="centered")
-st.title("📱 Stream Camera to Remote Server")
+# Set this to your laptop's local IP on same Wi-Fi (e.g., 192.168.x.x)
+upload_url = "http://192.168.X.X:8000/upload"  # <-- Replace with actual IP
 
-st.markdown(
-    """
-This app will access your webcam and **stream frames** to a remote server endpoint.
+st.markdown(f"""
+This app streams camera frames to:
 
-✅ Ensure camera permission is granted.  
-📡 Target: `POST {UPLOAD_URL}`  
-"""
-)
+`POST {upload_url}`
 
-# --- Video Processor to POST each frame ---
-class FrameSender(VideoTransformerBase):
-    def __init__(self):
-        self.last_post_time = 0
-        self.post_interval = 1  # seconds
+Make sure your laptop is running the Flask app and both devices are on the same Wi-Fi.
+""")
 
-    def transform(self, frame):
-        img = frame.to_ndarray(format="bgr24")
+st.components.v1.html(f"""
+<video id="video" autoplay playsinline width="100%" style="max-width: 400px;"></video>
+<canvas id="canvas" style="display:none;"></canvas>
 
-        # Throttle sending to once per second
-        if time.time() - self.last_post_time > self.post_interval:
-            _, buffer = cv2.imencode('.jpg', img)
-            try:
-                requests.post(UPLOAD_URL, files={"frame": buffer.tobytes()}, timeout=1)
-            except Exception as e:
-                print("Failed to send frame:", e)
-            self.last_post_time = time.time()
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const uploadUrl = "{upload_url}";
 
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
+navigator.mediaDevices.getUserMedia({{ video: {{ facingMode: "user" }} }})
+  .then(stream => {{
+    video.srcObject = stream;
+  }})
+  .catch(err => {{
+    alert("Webcam access denied: " + err);
+  }});
 
-# Start the camera stream
-webrtc_streamer(
-    key="camera-sender",
-    video_transformer_factory=FrameSender,
-    media_stream_constraints={"video": {"facingMode": "user"}, "audio": False},
-    sendback_audio=False,
-)
+setInterval(() => {{
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {{
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0);
+    canvas.toBlob(blob => {{
+      const formData = new FormData();
+      formData.append('frame', blob, 'frame.jpg');
+      fetch(uploadUrl, {{
+        method: 'POST',
+        body: formData
+      }}).catch(e => console.log("Upload error", e));
+    }}, 'image/jpeg');
+  }}
+}}, 1000);  // 1 frame per second
+</script>
+""", height=480)
