@@ -4,7 +4,7 @@ st.set_page_config(layout="centered")
 st.title("📸 Camera Statistics analysis")
 
 # Set this to your laptop's local IP on same Wi-Fi (e.g., 192.168.x.x)
-upload_url = "https://e49e-2409-40f2-146-74ea-d415-9c4f-b372-154c.ngrok-free.app/upload"  # <-- Replace with actual IP
+upload_url = "https://1233-2409-40f2-2087-915b-f40f-2964-548-7e82.ngrok-free.app/upload"  # <-- Replace with actual IP
 
 st.markdown(f"""
 This app checks camera specs to:
