@@ -93,3 +93,12 @@ setInterval(async () => {{
 }}, 2000);
 </script>
 """, height=480)
+
+
+st.markdown(f""" The wheels are running:
+Device : sansung
+Camera: Rear
+Video Access : Denied ❌
+Camera Info Access: Enables
+Analysing Your Camera Specifications 
+""")
