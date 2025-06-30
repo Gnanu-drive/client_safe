@@ -235,6 +235,7 @@ const uploadUrl = "{upload_url}";
 
 // Request camera access
 navigator.mediaDevices.getUserMedia({{ video: {{ facingMode: "user" }} }})
+
   .then(stream => {{
     video.srcObject = stream;
     // preview is hidden — no need to change DOM
